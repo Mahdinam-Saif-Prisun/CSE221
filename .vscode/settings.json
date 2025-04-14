@@ -1,0 +1,10 @@
+{
+    "java.project.sourcePaths": [
+        ".",
+        "Lab_02",
+        "Lab_03",
+        "Lab_04",
+        "Theory"
+    ],
+    "java.project.referencedLibraries": []
+}
