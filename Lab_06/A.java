@@ -13,13 +13,15 @@ public class A {
         int[] tempValues = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer :: parseInt).toArray();
         StringBuilder sb = new StringBuilder("");
         
-        // Graph building
+        // Init graph
         int numOfCourses = tempValues[0];
         int numOfRequirements = tempValues[1];
         course[] reqGraph = new course[numOfCourses + 1];
         for(int i = 1; i <= numOfCourses; i++) {
             reqGraph[i] = new course();
         }
+
+        //Forming graph
         for (int i = 0; i < numOfRequirements; i++) {
             tempValues = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer :: parseInt).toArray();
             course uNode = reqGraph[tempValues[0]];
