@@ -39,7 +39,6 @@ public class D {
         }
         
         //Output
-        System.out.println("--------------------------------------------------------");
         System.out.println(sb.toString());
     }
 
