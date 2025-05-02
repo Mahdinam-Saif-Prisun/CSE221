@@ -1,63 +1,56 @@
 package Lab_06;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Scanner;
 
 public class C {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int boardSize = sc.nextInt();
-        int init_x = sc.nextInt();
-        int init_y = sc.nextInt();
-        int destination_x = sc.nextInt();
-        int destination_y = sc.nextInt();
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int boardSize = Integer.parseInt(br.readLine());
+        int[] tempValues = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer :: parseInt).toArray();
 
-        // --- Start Timer After Inputs ---
-        long startTime = System.nanoTime();
+        //Shifting to 0-th indexing
+        int init_x = tempValues[0] - 1, init_y = tempValues[1] - 1, fin_x = tempValues[2] - 1, fin_y = tempValues[3] - 1;
 
-        int[][][] visited = new int[boardSize][boardSize][3];
-        int[][] moveset = new int[][] {{1, 2}, {2, 1}, {-1, -2}, {-2, -1}, {1, -2}, {-2, 1}, {-1, 2}, {2, -1}};
-        int moves;
+        //Necessary arrays
+        int[][] moveSet = new int[][] {{1, 2}, {2, 1}, {-1, 2}, {2, -1}, {1, -2}, {-2, 1}, {-1, -2}, {-2, -1}};
+        boolean[][] visited = new boolean[boardSize][boardSize];
+        int[][] steps = new int[boardSize][boardSize];
 
-        //Modified BFS
-        Queue<int[]> bfsQ = new LinkedList<>();
-        visited[init_x - 1][init_y - 1] = new int[] {-1, -1, 0};
-        bfsQ.add(new int[] {init_x, init_y, 0});
-        while(!bfsQ.isEmpty()) {
-            int[] current = bfsQ.remove();
-            if(current[0] == destination_x && current[1] == destination_y) {
-                break;
-            }
-            for(int[] movingPos : moveset) {
-                int temp_x = current[0] + movingPos[0];
-                int temp_y = current[1] + movingPos[1];
-                if((temp_x > 0 && temp_x <= boardSize) && (temp_y > 0 && temp_y <= boardSize)) {
-                    if(((Math.abs(destination_x - current[0]) >= Math.abs(destination_x - temp_x) - 3) || (Math.abs(destination_y - current[1]) >= Math.abs(destination_y - temp_y) - 3))) {
-                        if(visited[temp_x - 1][temp_y - 1][0] == 0) {
-                            visited[temp_x - 1][temp_y - 1] = new int[] {current[0], current[1], current[2] + 1};
-                            bfsQ.add(new int[] {temp_x, temp_y, current[2] + 1});
-                        }
-                    }
+        //BFS approach
+        Queue<int[]> bfsq = new LinkedList<>();
+        bfsq.add(new int[] {init_x, init_y});
+        visited[init_x][init_y] = true;
+        
+        //bfs Loop
+        while(!bfsq.isEmpty()) {
+            int[] curr_coord = bfsq.remove();
+            int curr_x = curr_coord[0], curr_y = curr_coord[1];
+            int numOfMoves = steps[curr_x][curr_y];
+            for(int[] moves : moveSet) {
+                int temp_x = curr_x + moves[0];
+                int temp_y = curr_y + moves[1];
+
+                //Pruning and enqueueing
+                if((temp_x >= 0 && temp_y >= 0 && temp_x < boardSize && temp_y < boardSize) && (!visited[temp_x][temp_y])) {
+                    visited[temp_x][temp_y] = true;
+                    steps[temp_x][temp_y] = numOfMoves + 1;
+                    bfsq.add(new int[] {temp_x, temp_y});
                 }
             }
         }
 
-        //StepCounter
-        if(visited[destination_x - 1][destination_y - 1][0] == 0) {
-            moves = -1;
-        }
-        else {
-            moves = visited[destination_x - 1][destination_y - 1][2];
+        //Finding out result
+        int result = steps[fin_x][fin_y];
+        if(!visited[fin_x][fin_y]) {
+            result = -1;
         }
 
-        System.out.println(moves);
-
-
-        long endTime = System.nanoTime();
-
-        // --- Output Runtime in Milliseconds ---
-        double runtimeMs = (endTime - startTime) / 1e6;
-        System.out.printf("Runtime: %.3f ms\n", runtimeMs);
+        //Output
+        System.out.println(result);
     }
 }
