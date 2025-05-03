@@ -54,3 +54,7 @@ public class C {
         System.out.println(result);
     }
 }
+
+/* 
+Note to self: When in doubt try bruteforcing
+*/
